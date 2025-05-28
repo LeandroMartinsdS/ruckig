@@ -9,7 +9,7 @@ def split_csv(path, filename, lines_per_file=10000):
         current_lines = []
 
         for i, row in enumerate(reader):
-            current_lines.append(row)
+            current_lines.append([row[0], file_count] + row[1:])
             if (i + 1) % lines_per_file == 0:
                 output_filename = f'output_{file_count}.csv'
                 output_file = os.path.join(path,output_filename)
@@ -17,13 +17,14 @@ def split_csv(path, filename, lines_per_file=10000):
                     writer = csv.writer(outfile)
                     # writer.writerow(headers)
                     writer.writerows(current_lines)
-                file_count += 1
                 current_lines = []
+                file_count += 1
 
         # Write remaining lines to a new file
         if current_lines:
+            output_filename = f'output_{file_count}.csv'
+            output_file = os.path.join(path,output_filename)
             with open(output_file, 'w', newline='') as outfile:
                 writer = csv.writer(outfile)
                 # writer.writerow(headers)
                 writer.writerows(current_lines)
-
